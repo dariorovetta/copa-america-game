@@ -38,6 +38,25 @@ app.post('/api/predictions', (req, res) => {
     res.json({ success: true });
 });
 
+// Ruta para obtener las predicciones de un usuario
+app.get('/api/predictions/:username', (req, res) => {
+    const username = req.params.username;
+    const filePath = path.join(__dirname, 'data', 'predictions.json');
+    
+    if (!fs.existsSync(filePath)) {
+        return res.json({ success: false, message: 'No predictions found' });
+    }
+
+    const users = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const user = users.find(user => user.username === username);
+    
+    if (user) {
+        res.json({ success: true, predictions: user.predictions });
+    } else {
+        res.json({ success: false, message: 'User not found' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
