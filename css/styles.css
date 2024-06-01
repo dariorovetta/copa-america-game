@@ -1,3 +1,5 @@
+/* Añade esto a tu archivo styles.css */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -33,4 +35,57 @@ main {
 
 section {
     margin-bottom: 2em;
+}
+
+.match-card {
+    border: 1px solid #ccc;
+    padding: 1em;
+    margin-bottom: 1em;
+    background-color: #f9f9f9;
+    position: relative;
+}
+
+.match-card h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+}
+
+.match-card .team {
+    display: inline-block;
+    width: 45%;
+    text-align: center;
+}
+
+.match-card .team img {
+    display: block;
+    margin: 0 auto;
+}
+
+.match-card .score {
+    display: inline-block;
+    width: 8%;
+    text-align: center;
+}
+
+.match-card .details {
+    font-size: 0.9em;
+    color: #777;
+    text-align: center;
+    margin-top: 0.5em;
+}
+
+.match-card .predictions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+}
+
+.match-card .predictions input[type="radio"] {
+    margin: 0 1em;
+}
+
+button {
+    padding: 0.5em 1em;
+    margin: 1em 0;
 }
