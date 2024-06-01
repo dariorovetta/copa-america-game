@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwIDgsGhp9XUxio28D95aN5ugq6qAQRMpu0wVkQSFBtDxYQhDH9yzciPRCe20sCgu1E5Q/exec'; // Sustituye esto con la URL de tu despliegue de Apps Script
+    const scriptURL = 'http://localhost:3000/api/predictions'; // URL del servidor local
     let currentUser = null;
 
     const users = [
