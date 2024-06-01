@@ -1,12 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwIDgsGhp9XUxio28D95aN5ugq6qAQRMpu0wVkQSFBtDxYQhDH9yzciPRCe20sCgu1E5Q/exec'; // Sustituye esto con la URL de tu despliegue de Apps Script
     let currentUser = null;
-    let users = [
-        { id: "USER_0001", username: "darioRovetta", password: "d1231", groupPredictions: {}, remainingPredictions: {} },
-        { id: "USER_0002", username: "micaelaLatorre", password: "d1232", groupPredictions: {}, remainingPredictions: {} },
-        { id: "USER_0003", username: "myrianBrunengo", password: "d1233", groupPredictions: {}, remainingPredictions: {} },
-        { id: "USER_0004", username: "sergioRovetta", password: "d1234", groupPredictions: {}, remainingPredictions: {} },
-        { id: "USER_0005", username: "leandroRovetta", password: "d1235", groupPredictions: {}, remainingPredictions: {} },
-        { id: "USER_0006", username: "pabloRovetta", password: "d1236", groupPredictions: {}, remainingPredictions: {} }
+
+    const users = [
+        { username: "darioRovetta", password: "d1231" },
+        { username: "micaelaLatorre", password: "d1232" },
+        { username: "myrianBrunengo", password: "d1233" },
+        { username: "sergioRovetta", password: "d1234" },
+        { username: "leandroRovetta", password: "d1235" },
+        { username: "pabloRovetta", password: "d1236" }
     ];
 
     const matches = [
@@ -14,53 +16,35 @@ document.addEventListener("DOMContentLoaded", () => {
         // Añade los demás partidos aquí...
     ];
 
-    // Cargar usuarios del almacenamiento local, si existen
-    const storedUsers = localStorage.getItem('users');
-    if (storedUsers) {
-        users = JSON.parse(storedUsers);
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const user = users.find(user => user.username === username && user.password === password);
+            const loginResult = document.getElementById('loginResult');
+
+            if (user) {
+                loginResult.textContent = 'Inicio de sesión exitoso';
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                window.location.href = 'predictions.html';
+            } else {
+                loginResult.textContent = 'Usuario o clave incorrectos';
+            }
+        });
     }
 
-    const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+    if (window.location.pathname.includes('predictions.html')) {
+        currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        displayMatches();
 
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        const user = users.find(user => user.username === username && user.password === password);
-        const loginResult = document.getElementById('loginResult');
-
-        if (user) {
-            loginResult.textContent = 'Inicio de sesión exitoso';
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('menu').style.display = 'block';
-            currentUser = user;
-            displayMatches();
-
-            document.getElementById('viewPredictions').addEventListener('click', () => {
-                document.getElementById('predictions').style.display = 'block';
-                document.getElementById('results').style.display = 'none';
-                document.getElementById('upcoming').style.display = 'none';
-            });
-
-            document.getElementById('viewResults').addEventListener('click', () => {
-                document.getElementById('predictions').style.display = 'none';
-                document.getElementById('results').style.display = 'block';
-                document.getElementById('upcoming').style.display = 'none';
-            });
-
-            document.getElementById('viewUpcoming').addEventListener('click', () => {
-                document.getElementById('predictions').style.display = 'none';
-                document.getElementById('results').style.display = 'none';
-                document.getElementById('upcoming').style.display = 'block';
-            });
-
-            document.getElementById('editPredictions').addEventListener('click', enableEditing);
-            document.getElementById('savePredictions').addEventListener('click', savePredictions);
-        } else {
-            loginResult.textContent = 'Usuario o clave incorrectos';
-        }
-    });
+        document.getElementById('editPredictions').addEventListener('click', enableEditing);
+        document.getElementById('savePredictions').addEventListener('click', savePredictions);
+    }
 
     function displayMatches() {
         const predictionsSection = document.getElementById('matchesContainer');
@@ -72,15 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h3>${match.id}° Partido</h3>
                 <div class="team">${match.team1}</div>
                 <div class="score">
-                    <input type="radio" name="prediction${match.id}" value="team1Win" disabled ${currentUser.groupPredictions[match.id] === 'team1Win' ? 'checked' : ''}>
+                    <input type="radio" name="prediction${match.id}" value="team1Win" disabled ${currentUser.groupPredictions && currentUser.groupPredictions[match.id] === 'team1Win' ? 'checked' : ''}>
                 </div>
                 <div class="score">vs</div>
                 <div class="score">
-                    <input type="radio" name="prediction${match.id}" value="draw" disabled ${currentUser.groupPredictions[match.id] === 'draw' ? 'checked' : ''}>
+                    <input type="radio" name="prediction${match.id}" value="draw" disabled ${currentUser.groupPredictions && currentUser.groupPredictions[match.id] === 'draw' ? 'checked' : ''}>
                 </div>
                 <div class="score">vs</div>
                 <div class="score">
-                    <input type="radio" name="prediction${match.id}" value="team2Win" disabled ${currentUser.groupPredictions[match.id] === 'team2Win' ? 'checked' : ''}>
+                    <input type="radio" name="prediction${match.id}" value="team2Win" disabled ${currentUser.groupPredictions && currentUser.groupPredictions[match.id] === 'team2Win' ? 'checked' : ''}>
                 </div>
                 <div class="team">${match.team2}</div>
                 <div class="details">Fecha: ${match.date} - ${match.time}</div>
@@ -99,12 +83,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function savePredictions() {
+        const predictions = {};
         document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
             const matchId = input.name.replace('prediction', '');
-            currentUser.groupPredictions[matchId] = input.value;
+            predictions[matchId] = input.value;
         });
-        // Guardar usuarios en localStorage
-        localStorage.setItem('users', JSON.stringify(users));
+        currentUser.groupPredictions = predictions;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        fetch(scriptURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: currentUser.username,
+                predictions: currentUser.groupPredictions
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Predicciones guardadas exitosamente');
+            } else {
+                alert('Error al guardar las predicciones');
+            }
+        });
+
         document.querySelectorAll('input[type="radio"]').forEach(input => {
             input.disabled = true;
         });
