@@ -9,24 +9,28 @@
 <body>
     <header>
         <h1>Copa America 2024 - Predicciones</h1>
-        <nav>
-            <ul>
-                <li><a href="#predictions">Ver Predicciones</a></li>
-                <li><a href="#results">Ver Resultados</a></li>
-                <li><a href="#upcoming">Próximos Partidos</a></li>
-            </ul>
-        </nav>
     </header>
     <main>
-        <section id="predictions">
+        <section id="login">
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Clave:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+            <div id="loginResult"></div>
+        </section>
+        <section id="predictions" style="display: none;">
             <h2>Predicciones</h2>
             <!-- Contenido de las predicciones -->
         </section>
-        <section id="results">
+        <section id="results" style="display: none;">
             <h2>Resultados</h2>
             <!-- Contenido de los resultados -->
         </section>
-        <section id="upcoming">
+        <section id="upcoming" style="display: none;">
             <h2>Próximos Partidos</h2>
             <!-- Contenido de los próximos partidos -->
         </section>
