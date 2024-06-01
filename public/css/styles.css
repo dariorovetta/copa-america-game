@@ -14,21 +14,6 @@ header {
     text-align: center;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin: 0 1em;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-}
-
 main {
     padding: 2em;
 }
@@ -55,11 +40,6 @@ section {
     display: inline-block;
     width: 45%;
     text-align: center;
-}
-
-.match-card .team img {
-    display: block;
-    margin: 0 auto;
 }
 
 .match-card .score {
